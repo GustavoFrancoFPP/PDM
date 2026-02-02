@@ -8,6 +8,8 @@ void main() {
 
 // Define o widget principal da aplicação.
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // Construtor do widget MyApp.
   @override
   Widget build(BuildContext context) {
