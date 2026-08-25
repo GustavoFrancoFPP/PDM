@@ -9,6 +9,8 @@ void main() {
 }
 
 class SalvarTextoApp extends StatefulWidget {
+  const SalvarTextoApp({super.key});
+
   @override
   _SalvarTextoAppState createState() => _SalvarTextoAppState();
 }

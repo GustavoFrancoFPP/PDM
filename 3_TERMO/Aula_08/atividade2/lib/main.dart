@@ -9,6 +9,8 @@ void main() {
 }
 
 class ListaComprasApp extends StatefulWidget {
+  const ListaComprasApp({super.key});
+
   @override
   _ListaComprasAppState createState() => _ListaComprasAppState();
 }
@@ -117,10 +119,10 @@ class _ListaComprasAppState extends State<ListaComprasApp> {
                       SizedBox(width: 12),
                       ElevatedButton(
                         onPressed: limparLista,
-                        child: Text("Limpar"),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                         ),
+                        child: Text("Limpar"),
                       ),
                     ],
                   ],
