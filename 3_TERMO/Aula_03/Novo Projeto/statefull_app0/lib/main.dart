@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(home: PaginaContador()));
+  runApp(const MaterialApp(home: PaginaContador()));
 }
 
 class PaginaContador extends StatefulWidget {
+  const PaginaContador({super.key});
+
   @override
-  _PaginaContadorState createState() => _PaginaContadorState();
+  State<PaginaContador> createState() => _PaginaContadorState();
 }
 
 class _PaginaContadorState extends State<PaginaContador> {
@@ -25,7 +27,6 @@ class _PaginaContadorState extends State<PaginaContador> {
         child: Text('Clique: $contador', style: TextStyle(fontSize: 30)),
       ),
       floatingActionButton: FloatingActionButton(
-        
         onPressed: increment,
         child: Icon(Icons.add),
       ),

@@ -173,128 +173,19 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   Future<void> abrirEdicao(
     QueryDocumentSnapshot<Map<String, dynamic>> documento,
   ) async {
-    final aluno = documento.data();
-    final nomeEdicao = TextEditingController(text: _texto(aluno, 'nome'));
-    final idadeEdicao = TextEditingController(text: _texto(aluno, 'idade'));
-    final cursoEdicao = TextEditingController(text: _texto(aluno, 'curso'));
-    final emailEdicao = TextEditingController(text: _texto(aluno, 'email'));
-    final formEdicaoKey = GlobalKey<FormState>();
-
     final salvo = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) {
-        bool salvandoEdicao = false;
-
-        return StatefulBuilder(
-          builder: (dialogContext, setDialogState) {
-            return AlertDialog(
-              title: const Text('Editar aluno'),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: formEdicaoKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _campoFormulario(
-                        controller: nomeEdicao,
-                        label: 'Nome',
-                        icon: Icons.person_outline,
-                        validator: (valor) =>
-                            _validarObrigatorio(valor, 'o nome'),
-                      ),
-                      _campoFormulario(
-                        controller: idadeEdicao,
-                        label: 'Idade',
-                        icon: Icons.cake_outlined,
-                        keyboardType: TextInputType.number,
-                        validator: _validarIdade,
-                      ),
-                      _campoFormulario(
-                        controller: cursoEdicao,
-                        label: 'Curso',
-                        icon: Icons.school_outlined,
-                        validator: (valor) =>
-                            _validarObrigatorio(valor, 'o curso'),
-                      ),
-                      _campoFormulario(
-                        controller: emailEdicao,
-                        label: 'E-mail',
-                        icon: Icons.mail_outline,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: _validarEmail,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: salvandoEdicao
-                      ? null
-                      : () => Navigator.of(dialogContext).pop(false),
-                  child: const Text('Cancelar'),
-                ),
-                FilledButton.icon(
-                  onPressed: salvandoEdicao
-                      ? null
-                      : () async {
-                          if (!formEdicaoKey.currentState!.validate()) {
-                            return;
-                          }
-
-                          setDialogState(() => salvandoEdicao = true);
-
-                          try {
-                            await documento.reference.update(
-                              _dadosAluno(
-                                nome: nomeEdicao.text,
-                                idade: idadeEdicao.text,
-                                curso: cursoEdicao.text,
-                                email: emailEdicao.text,
-                              ),
-                            );
-
-                            if (!dialogContext.mounted) return;
-                            Navigator.of(dialogContext).pop(true);
-                          } on FirebaseException catch (erro) {
-                            if (!mounted || !dialogContext.mounted) return;
-                            setDialogState(() => salvandoEdicao = false);
-                            _mostrarMensagem(
-                              'Erro ao editar: ${erro.message ?? erro.code}',
-                            );
-                          } catch (_) {
-                            if (!mounted || !dialogContext.mounted) return;
-                            setDialogState(() => salvandoEdicao = false);
-                            _mostrarMensagem(
-                              'Nao foi possivel editar o aluno.',
-                            );
-                          }
-                        },
-                  icon: salvandoEdicao
-                      ? const SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.save_outlined),
-                  label: const Text('Salvar'),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      builder: (_) => _DialogoEdicaoAluno(documento: documento),
     );
-
-    nomeEdicao.dispose();
-    idadeEdicao.dispose();
-    cursoEdicao.dispose();
-    emailEdicao.dispose();
 
     if (!mounted) return;
 
     if (salvo == true) {
-      _mostrarMensagem('Aluno atualizado com sucesso!');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _mostrarMensagem('Aluno atualizado com sucesso!');
+        }
+      });
     }
   }
 
@@ -340,30 +231,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       if (!mounted) return;
       _mostrarMensagem('Nao foi possivel excluir o aluno.');
     }
-  }
-
-  Map<String, dynamic> _dadosAluno({
-    required String nome,
-    required String idade,
-    required String curso,
-    required String email,
-    bool incluirCriadoEm = false,
-  }) {
-    final nomeTratado = nome.trim();
-    final dados = <String, dynamic>{
-      'nome': nomeTratado,
-      'nomeBusca': nomeTratado.toLowerCase(),
-      'idade': int.parse(idade.trim()),
-      'curso': curso.trim(),
-      'email': email.trim(),
-      'atualizadoEm': FieldValue.serverTimestamp(),
-    };
-
-    if (incluirCriadoEm) {
-      dados['criadoEm'] = FieldValue.serverTimestamp();
-    }
-
-    return dados;
   }
 
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _filtrarAlunos(
@@ -592,67 +459,241 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
       ),
     );
   }
+}
 
-  Widget _campoFormulario({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    required String? Function(String?) validator,
-    TextInputType? keyboardType,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        textInputAction: TextInputAction.next,
-        validator: validator,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+class _DialogoEdicaoAluno extends StatefulWidget {
+  const _DialogoEdicaoAluno({required this.documento});
+
+  final QueryDocumentSnapshot<Map<String, dynamic>> documento;
+
+  @override
+  State<_DialogoEdicaoAluno> createState() => _DialogoEdicaoAlunoState();
+}
+
+class _DialogoEdicaoAlunoState extends State<_DialogoEdicaoAluno> {
+  final _formKey = GlobalKey<FormState>();
+
+  late final TextEditingController _nomeController;
+  late final TextEditingController _idadeController;
+  late final TextEditingController _cursoController;
+  late final TextEditingController _emailController;
+
+  bool _salvando = false;
+  String? _mensagemErro;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final aluno = widget.documento.data();
+    _nomeController = TextEditingController(text: _texto(aluno, 'nome'));
+    _idadeController = TextEditingController(text: _texto(aluno, 'idade'));
+    _cursoController = TextEditingController(text: _texto(aluno, 'curso'));
+    _emailController = TextEditingController(text: _texto(aluno, 'email'));
+  }
+
+  Future<void> _salvar() async {
+    FocusScope.of(context).unfocus();
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() {
+      _salvando = true;
+      _mensagemErro = null;
+    });
+
+    try {
+      await widget.documento.reference.update(
+        _dadosAluno(
+          nome: _nomeController.text,
+          idade: _idadeController.text,
+          curso: _cursoController.text,
+          email: _emailController.text,
+        ),
+      );
+
+      if (!mounted) return;
+      Navigator.of(context).pop(true);
+    } on FirebaseException catch (erro) {
+      if (!mounted) return;
+      setState(() {
+        _salvando = false;
+        _mensagemErro = 'Erro ao editar: ${erro.message ?? erro.code}';
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _salvando = false;
+        _mensagemErro = 'Nao foi possivel editar o aluno.';
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _idadeController.dispose();
+    _cursoController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Editar aluno'),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (_mensagemErro != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    _mensagemErro!,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ),
+                ),
+              _campoFormulario(
+                controller: _nomeController,
+                label: 'Nome',
+                icon: Icons.person_outline,
+                validator: (valor) => _validarObrigatorio(valor, 'o nome'),
+              ),
+              _campoFormulario(
+                controller: _idadeController,
+                label: 'Idade',
+                icon: Icons.cake_outlined,
+                keyboardType: TextInputType.number,
+                validator: _validarIdade,
+              ),
+              _campoFormulario(
+                controller: _cursoController,
+                label: 'Curso',
+                icon: Icons.school_outlined,
+                validator: (valor) => _validarObrigatorio(valor, 'o curso'),
+              ),
+              _campoFormulario(
+                controller: _emailController,
+                label: 'E-mail',
+                icon: Icons.mail_outline,
+                keyboardType: TextInputType.emailAddress,
+                validator: _validarEmail,
+              ),
+            ],
+          ),
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: _salvando ? null : () => Navigator.of(context).pop(false),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton.icon(
+          onPressed: _salvando ? null : _salvar,
+          icon: _salvando
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.save_outlined),
+          label: const Text('Salvar'),
+        ),
+      ],
     );
   }
+}
 
-  String? _validarObrigatorio(String? valor, String campo) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Informe $campo.';
-    }
+Map<String, dynamic> _dadosAluno({
+  required String nome,
+  required String idade,
+  required String curso,
+  required String email,
+  bool incluirCriadoEm = false,
+}) {
+  final nomeTratado = nome.trim();
+  final dados = <String, dynamic>{
+    'nome': nomeTratado,
+    'nomeBusca': nomeTratado.toLowerCase(),
+    'idade': int.parse(idade.trim()),
+    'curso': curso.trim(),
+    'email': email.trim(),
+    'atualizadoEm': FieldValue.serverTimestamp(),
+  };
 
-    return null;
+  if (incluirCriadoEm) {
+    dados['criadoEm'] = FieldValue.serverTimestamp();
   }
 
-  String? _validarIdade(String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Informe a idade.';
-    }
+  return dados;
+}
 
-    final idade = int.tryParse(valor.trim());
+Widget _campoFormulario({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  required String? Function(String?) validator,
+  TextInputType? keyboardType,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      textInputAction: TextInputAction.next,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+  );
+}
 
-    if (idade == null || idade <= 0) {
-      return 'Informe uma idade valida.';
-    }
-
-    if (idade > 120) {
-      return 'Confira a idade informada.';
-    }
-
-    return null;
+String? _validarObrigatorio(String? valor, String campo) {
+  if (valor == null || valor.trim().isEmpty) {
+    return 'Informe $campo.';
   }
 
-  String? _validarEmail(String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Informe o e-mail.';
-    }
+  return null;
+}
 
-    if (!emailValido(valor)) {
-      return 'Informe um e-mail valido.';
-    }
-
-    return null;
+String? _validarIdade(String? valor) {
+  if (valor == null || valor.trim().isEmpty) {
+    return 'Informe a idade.';
   }
+
+  final idade = int.tryParse(valor.trim());
+
+  if (idade == null || idade <= 0) {
+    return 'Informe uma idade valida.';
+  }
+
+  if (idade > 120) {
+    return 'Confira a idade informada.';
+  }
+
+  return null;
+}
+
+String? _validarEmail(String? valor) {
+  if (valor == null || valor.trim().isEmpty) {
+    return 'Informe o e-mail.';
+  }
+
+  if (!emailValido(valor)) {
+    return 'Informe um e-mail valido.';
+  }
+
+  return null;
 }
 
 String _texto(Map<String, dynamic> dados, String campo) {

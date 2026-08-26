@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: InterruptorApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: InterruptorApp(),
+    ),
+  );
 }
 
 class InterruptorApp extends StatefulWidget {
+  const InterruptorApp({super.key});
+
   @override
-  _InterruptorAppState createState() => _InterruptorAppState();
+  State<InterruptorApp> createState() => _InterruptorAppState();
 }
 
 class _InterruptorAppState extends State<InterruptorApp> {
@@ -24,7 +28,9 @@ class _InterruptorAppState extends State<InterruptorApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: estaAceso ? const Color.fromARGB(255, 255, 246, 125) : Colors.purple,
+      backgroundColor: estaAceso
+          ? const Color.fromARGB(255, 255, 246, 125)
+          : Colors.purple,
       appBar: AppBar(
         title: Text(
           "Interruptor",
@@ -47,10 +53,7 @@ class _InterruptorAppState extends State<InterruptorApp> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: estaAceso ? Colors.yellow : Colors.white,
               ),
-              child: Text(
-                "Interruptor",
-                style: TextStyle(color: Colors.black),
-              ),
+              child: Text("Interruptor", style: TextStyle(color: Colors.black)),
             ),
           ],
         ),

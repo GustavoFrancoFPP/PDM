@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: TelaInicial()
-  ));
+  runApp(
+    const MaterialApp(debugShowCheckedModeBanner: false, home: TelaInicial()),
+  );
 }
 
 // Tela 1
 class TelaInicial extends StatelessWidget {
+  const TelaInicial({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Tela Inicial'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: AppBar(title: Text('Tela Inicial'), backgroundColor: Colors.blue),
       body: Center(
         child: ElevatedButton(
           child: Text('Ir para Segunda Tela'),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SegundaTela()),
+              MaterialPageRoute(builder: (context) => const SegundaTela()),
             );
-
           },
-           
         ),
       ),
     );
@@ -36,6 +32,8 @@ class TelaInicial extends StatelessWidget {
 //Tela 2
 
 class SegundaTela extends StatelessWidget {
+  const SegundaTela({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

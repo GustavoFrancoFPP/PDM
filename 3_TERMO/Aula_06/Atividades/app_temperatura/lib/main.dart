@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: TemperaturaApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: TemperaturaApp(),
+    ),
+  );
 }
 
 class TemperaturaApp extends StatefulWidget {
+  const TemperaturaApp({super.key});
+
   @override
-  _TemperaturaAppState createState() => _TemperaturaAppState();
+  State<TemperaturaApp> createState() => _TemperaturaAppState();
 }
 
 class _TemperaturaAppState extends State<TemperaturaApp> {
@@ -49,9 +53,7 @@ class _TemperaturaAppState extends State<TemperaturaApp> {
 
     return Scaffold(
       backgroundColor: corFundo,
-      appBar: AppBar(
-        title: Text('Controle de Temperatura'),
-      ),
+      appBar: AppBar(title: Text('Controle de Temperatura')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -60,7 +62,10 @@ class _TemperaturaAppState extends State<TemperaturaApp> {
             SizedBox(height: 10),
             Text(status, style: TextStyle(fontSize: 28, color: Colors.white)),
             SizedBox(height: 10),
-            Text('$temperatura °C', style: TextStyle(fontSize: 40, color: Colors.white)),
+            Text(
+              '$temperatura °C',
+              style: TextStyle(fontSize: 40, color: Colors.white),
+            ),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

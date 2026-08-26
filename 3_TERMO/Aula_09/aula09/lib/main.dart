@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,14 +11,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AppBanco(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: AppBanco());
   }
 }
 
 class AppBanco extends StatefulWidget {
+  const AppBanco({super.key});
+
   @override
   AppBancoState createState() => AppBancoState();
 }
@@ -27,7 +26,7 @@ class AppBancoState extends State<AppBanco> {
   TextEditingController controller = TextEditingController();
   List<Map<String, dynamic>> tarefas = [];
 
-  Future<Database> CriarBanco() async {
+  Future<Database> criarBanco() async {
     final caminho = await getDatabasesPath();
     final path = join(caminho, "banco.db");
 
@@ -35,7 +34,7 @@ class AppBancoState extends State<AppBanco> {
       path,
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE tarefas(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)"
+          "CREATE TABLE tarefas(id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT)",
         );
       },
       version: 1,
@@ -43,17 +42,14 @@ class AppBancoState extends State<AppBanco> {
   }
 
   Future<void> inserirTarefa(String nome) async {
-    final db = await CriarBanco();
+    final db = await criarBanco();
 
-    await db.insert(
-      'tarefas',
-      {'nome': nome},
-    );
+    await db.insert('tarefas', {'nome': nome});
     carregarTarefas();
   }
 
   Future<void> carregarTarefas() async {
-    final db = await CriarBanco();
+    final db = await criarBanco();
     final lista = await db.query("tarefas");
 
     setState(() {
@@ -62,12 +58,9 @@ class AppBancoState extends State<AppBanco> {
   }
 
   Future<void> deletarTarefa(int id) async {
-    final db = await CriarBanco();
+    final db = await criarBanco();
 
-    await db.delete(
-      "tarefas",
-      where: "id = ?",
-      whereArgs: [id]);
+    await db.delete("tarefas", where: "id = ?", whereArgs: [id]);
     carregarTarefas();
   }
 
@@ -75,14 +68,12 @@ class AppBancoState extends State<AppBanco> {
   void initState() {
     super.initState();
     carregarTarefas();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Banco de Dados"),
-      ),
+      appBar: AppBar(title: Text("Banco de Dados")),
       body: Column(
         children: [
           Padding(

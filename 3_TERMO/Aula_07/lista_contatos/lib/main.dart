@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: ListaContatos()
-  ));
+  runApp(
+    const MaterialApp(debugShowCheckedModeBanner: false, home: ListaContatos()),
+  );
 }
 
 class Contato {
@@ -13,7 +12,7 @@ class Contato {
   final IconData icone;
   final Color cor;
 
-  Contato({
+  const Contato({
     required this.nome,
     required this.telefone,
     required this.icone,
@@ -22,7 +21,9 @@ class Contato {
 }
 
 class ListaContatos extends StatelessWidget {
-  final List<Contato> contatos = [
+  const ListaContatos({super.key});
+
+  static const List<Contato> contatos = [
     Contato(
       nome: "João Silva",
       telefone: "(11) 99999-0000",
@@ -77,15 +78,12 @@ class ListaContatos extends StatelessWidget {
 class Detalhes extends StatelessWidget {
   final Contato contato;
 
-  Detalhes({required this.contato});
+  const Detalhes({super.key, required this.contato});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Detalhes"),
-        backgroundColor: contato.cor,
-      ),
+      appBar: AppBar(title: Text("Detalhes"), backgroundColor: contato.cor),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -96,9 +94,15 @@ class Detalhes extends StatelessWidget {
               child: Icon(contato.icone, size: 60, color: Colors.white),
             ),
             SizedBox(height: 24),
-            Text(contato.nome, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text(
+              contato.nome,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 12),
-            Text(contato.telefone, style: TextStyle(fontSize: 16, color: contato.cor)),
+            Text(
+              contato.telefone,
+              style: TextStyle(fontSize: 16, color: contato.cor),
+            ),
             SizedBox(height: 40),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(backgroundColor: contato.cor),

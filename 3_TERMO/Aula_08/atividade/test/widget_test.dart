@@ -1,33 +1,22 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:atividade/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:atividade/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Adiciona e remove nota', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(home: AppNotas()));
+  testWidgets('Adiciona nota', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
 
-    // Verify that the app is loaded
+    await tester.pumpWidget(const MaterialApp(home: AppNotas()));
+    await tester.pump();
+
     expect(find.text('Minhas Notas'), findsOneWidget);
     expect(find.text('Nenhuma nota ainda'), findsOneWidget);
 
-    // Enter a note
     await tester.enterText(find.byType(TextField), 'Test Note');
-    await tester.pump();
-
-    // Tap the save button
     await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
 
-    // Verify that the note was added
     expect(find.text('Test Note'), findsOneWidget);
   });
 }

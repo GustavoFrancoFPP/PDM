@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: ListaComprasApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ListaComprasApp(),
+    ),
+  );
 }
 
 class ListaComprasApp extends StatefulWidget {
   const ListaComprasApp({super.key});
 
   @override
-  _ListaComprasAppState createState() => _ListaComprasAppState();
+  State<ListaComprasApp> createState() => _ListaComprasAppState();
 }
 
 class _ListaComprasAppState extends State<ListaComprasApp> {
@@ -147,9 +149,7 @@ class _ListaComprasAppState extends State<ListaComprasApp> {
                             decoration: comprado[index]
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
-                            color: comprado[index]
-                                ? Colors.grey
-                                : Colors.black,
+                            color: comprado[index] ? Colors.grey : Colors.black,
                           ),
                         ),
                         trailing: IconButton(

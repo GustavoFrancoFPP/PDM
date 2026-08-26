@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: AlteradorHumorApp(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AlteradorHumorApp(),
+    ),
+  );
 }
 
 class AlteradorHumorApp extends StatefulWidget {
+  const AlteradorHumorApp({super.key});
+
   @override
-  _AlteradorHumorAppState createState() => _AlteradorHumorAppState();
+  State<AlteradorHumorApp> createState() => _AlteradorHumorAppState();
 }
 
 class _AlteradorHumorAppState extends State<AlteradorHumorApp> {
@@ -38,18 +42,12 @@ class _AlteradorHumorAppState extends State<AlteradorHumorApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Meu Humor"),
-        backgroundColor: corDeFundo,
-      ),
+      appBar: AppBar(title: Text("Meu Humor"), backgroundColor: corDeFundo),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              emoji,
-              style: TextStyle(fontSize: 100),
-            ),
+            Text(emoji, style: TextStyle(fontSize: 100)),
             SizedBox(height: 20),
             Text(
               "Eu estou $humor",
@@ -58,13 +56,8 @@ class _AlteradorHumorAppState extends State<AlteradorHumorApp> {
             SizedBox(height: 40),
             ElevatedButton(
               onPressed: mudarHumor,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: corDeFundo,
-              ),
-              child: Text(
-                "Mudar Humor",
-                style: TextStyle(color: Colors.white),
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: corDeFundo),
+              child: Text("Mudar Humor", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

@@ -1,40 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+import 'package:atividade2/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:atividade2/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Lista de compras - adicionar e marcar item', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(home: ListaComprasApp()));
+  testWidgets('Lista de compras - adicionar e marcar item', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
 
-    // Verify that the app is loaded
-    expect(find.text('🛒 Lista de Compras'), findsOneWidget);
+    await tester.pumpWidget(const MaterialApp(home: ListaComprasApp()));
+    await tester.pump();
+
+    expect(find.text('Lista de Compras (0/0)'), findsOneWidget);
     expect(find.text('Nenhum item na lista'), findsOneWidget);
 
-    // Enter an item
     await tester.enterText(find.byType(TextField), 'Leite');
+    await tester.tap(find.text('Adicionar'));
     await tester.pump();
 
-    // Tap the add button
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that the item was added
     expect(find.text('Leite'), findsOneWidget);
 
-    // Mark item as done
     await tester.tap(find.byType(Checkbox));
     await tester.pump();
 
-    // Verify counter updated
-    expect(find.text('1/1'), findsOneWidget);
+    expect(find.text('Lista de Compras (1/1)'), findsOneWidget);
   });
 }

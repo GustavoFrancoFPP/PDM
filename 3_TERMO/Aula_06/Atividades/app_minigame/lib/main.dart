@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: JogoApp(),
-  ));
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: JogoApp()));
 }
 
 class JogoApp extends StatefulWidget {
+  const JogoApp({super.key});
+
   @override
-  _JogoAppState createState() => _JogoAppState();
+  State<JogoApp> createState() => _JogoAppState();
 }
 
 class _JogoAppState extends State<JogoApp> {
@@ -18,7 +17,7 @@ class _JogoAppState extends State<JogoApp> {
   String resultado = 'Escolha uma opção';
   int pontosJogador = 0;
   int pontosComputador = 0;
-  List opcoes = ['pedra', 'papel', 'tesoura'];
+  List<String> opcoes = ['pedra', 'papel', 'tesoura'];
 
   void jogar(String escolhaUsuario) {
     var numero = Random().nextInt(3);
@@ -37,7 +36,8 @@ class _JogoAppState extends State<JogoApp> {
 
       if (escolhaUsuario == escolhaComputador) {
         resultado = 'Empate';
-      } else if ((escolhaUsuario == 'pedra' && escolhaComputador == 'tesoura') ||
+      } else if ((escolhaUsuario == 'pedra' &&
+              escolhaComputador == 'tesoura') ||
           (escolhaUsuario == 'papel' && escolhaComputador == 'pedra') ||
           (escolhaUsuario == 'tesoura' && escolhaComputador == 'papel')) {
         pontosJogador++;
@@ -73,9 +73,7 @@ class _JogoAppState extends State<JogoApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Pedra Papel Tesoura'),
-      ),
+      appBar: AppBar(title: Text('Pedra Papel Tesoura')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -90,9 +88,18 @@ class _JogoAppState extends State<JogoApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(icon: Icon(Icons.landscape), onPressed: () => jogar('pedra')),
-                IconButton(icon: Icon(Icons.pan_tool), onPressed: () => jogar('papel')),
-                IconButton(icon: Icon(Icons.content_cut), onPressed: () => jogar('tesoura')),
+                IconButton(
+                  icon: Icon(Icons.landscape),
+                  onPressed: () => jogar('pedra'),
+                ),
+                IconButton(
+                  icon: Icon(Icons.pan_tool),
+                  onPressed: () => jogar('papel'),
+                ),
+                IconButton(
+                  icon: Icon(Icons.content_cut),
+                  onPressed: () => jogar('tesoura'),
+                ),
               ],
             ),
             SizedBox(height: 20),

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
 class DatabaseHelper {
   static Database? _db;
-  
+
   Future<Database> get database async {
     _db ??= await _initDB();
     return _db!;
@@ -25,17 +25,25 @@ class DatabaseHelper {
 
   Future<Database> _initDB() async {
     final path = p.join(await getDatabasesPath(), 'cadastro.db');
-    return openDatabase(path, onCreate: (db, version) {
-      return db.execute(
-        'CREATE TABLE dados(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, descricao TEXT, data TEXT)'
-      );
-    }, version: 1);
+    return openDatabase(
+      path,
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE dados(id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, descricao TEXT, data TEXT)',
+        );
+      },
+      version: 1,
+    );
   }
 
   Future<int> insert(String titulo, String descricao) async {
     final db = await database;
     final now = DateTime.now().toString().split('.')[0];
-    return db.insert('dados', {'titulo': titulo, 'descricao': descricao, 'data': now});
+    return db.insert('dados', {
+      'titulo': titulo,
+      'descricao': descricao,
+      'data': now,
+    });
   }
 
   Future<List<Map<String, dynamic>>> getAll() async {
@@ -45,7 +53,12 @@ class DatabaseHelper {
 
   Future<int> update(int id, String titulo, String descricao) async {
     final db = await database;
-    return db.update('dados', {'titulo': titulo, 'descricao': descricao}, where: 'id = ?', whereArgs: [id]);
+    return db.update(
+      'dados',
+      {'titulo': titulo, 'descricao': descricao},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   Future<int> delete(int id) async {
@@ -70,7 +83,7 @@ class _HomePageState extends State<HomePage> {
     _load();
   }
 
-  _load() async {
+  Future<void> _load() async {
     final data = await db.getAll();
     setState(() => items = data);
   }
@@ -87,7 +100,9 @@ class _HomePageState extends State<HomePage> {
                 final item = items[i];
                 return ListTile(
                   title: Text(item['titulo']),
-                  subtitle: Text('${item['descricao']}\n${item['data'] ?? 'Sem data'}'),
+                  subtitle: Text(
+                    '${item['descricao']}\n${item['data'] ?? 'Sem data'}',
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -95,7 +110,9 @@ class _HomePageState extends State<HomePage> {
                         icon: const Icon(Icons.edit),
                         onPressed: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => EditPage(item: item)),
+                          MaterialPageRoute(
+                            builder: (_) => EditPage(item: item),
+                          ),
                         ).then((_) => _load()),
                       ),
                       IconButton(
@@ -143,12 +160,18 @@ class _AddPageState extends State<AddPage> {
           children: [
             TextField(
               controller: titulo,
-              decoration: const InputDecoration(labelText: 'Título', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Título',
+                border: OutlineInputBorder(),
+              ),
             ),
             const SizedBox(height: 15),
             TextField(
               controller: descricao,
-              decoration: const InputDecoration(labelText: 'Descrição', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Descrição',
+                border: OutlineInputBorder(),
+              ),
               maxLines: 5,
             ),
             const SizedBox(height: 20),
@@ -204,12 +227,18 @@ class _EditPageState extends State<EditPage> {
           children: [
             TextField(
               controller: titulo,
-              decoration: const InputDecoration(labelText: 'Título', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Título',
+                border: OutlineInputBorder(),
+              ),
             ),
             const SizedBox(height: 15),
             TextField(
               controller: descricao,
-              decoration: const InputDecoration(labelText: 'Descrição', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Descrição',
+                border: OutlineInputBorder(),
+              ),
               maxLines: 5,
             ),
             const SizedBox(height: 20),
@@ -233,4 +262,3 @@ class _EditPageState extends State<EditPage> {
     super.dispose();
   }
 }
-
