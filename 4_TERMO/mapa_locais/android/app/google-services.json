@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562656177927",
+    "project_id": "mapa-locais-flutter-b6146",
+    "storage_bucket": "mapa-locais-flutter-b6146.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562656177927:android:3c40ae6673041cd1771fa2",
+        "android_client_info": {
+          "package_name": "com.example.mapa_locais"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFq82ZPiolFvHPBNqvlNyq6ibcyCcswjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
